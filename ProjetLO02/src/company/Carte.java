@@ -1,6 +1,7 @@
-package com.company;
+package company;
 
 import java.util.*;
+import java.lang.*;
 
 public class Carte {
 
@@ -8,7 +9,7 @@ public class Carte {
 
     public static ArrayList<Carte> Pioche = new ArrayList<Carte>();
     public static ArrayList<Carte> Set = new ArrayList<Carte>();
-
+    public String effeth,effetw;
     public Carte(String nom) {
         this.nom = nom;
     }
