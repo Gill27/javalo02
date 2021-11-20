@@ -5,8 +5,10 @@ public class EffetHunter {
 
         public void effethunt(String effet)
     {
-        boolean test = effet.contains("&");
 
+        if (effet.contains("&"))
+
+        { }
 
 
 

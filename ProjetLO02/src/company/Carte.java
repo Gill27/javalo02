@@ -45,7 +45,7 @@ public class Carte {
         Set.add(carte11);
         Set.add(carte12);
 
-        System.out.println("Set de com.company.Carte : "+ Set);
+        System.out.println("Set de Carte : "+ Set);
 
         Pioche.addAll(Set);
 

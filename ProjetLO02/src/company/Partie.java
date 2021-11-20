@@ -40,7 +40,7 @@ public class Partie {
 
             int idjj = sc.nextInt();
             sc.nextLine();
-            System.out.println("com.company.Joueur : " + groupeJoueur.get(idjj).getNomJoueur());
+            System.out.println("Joueur : " + groupeJoueur.get(idjj).getNomJoueur());
            return groupeJoueur.get(idjj);
         }
 

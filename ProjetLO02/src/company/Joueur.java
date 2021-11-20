@@ -16,7 +16,7 @@ public class Joueur {
 
 
     public String toString() {
-        return "com.company.Joueur : " + nomJoueur + " mainJoueur = " + mainJoueur;
+        return "Joueur : " + nomJoueur + " mainJoueur = " + mainJoueur;
     }
 
     //////////////Constructeur//////////////
