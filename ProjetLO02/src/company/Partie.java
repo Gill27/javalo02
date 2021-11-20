@@ -2,7 +2,7 @@ package company;
 
 import java.util.*;
 
-public class Partie {
+public class Partie implements EffetHunter {
 
     public int nombreJrs;
     public static ArrayList<Joueur> groupeJoueur = new ArrayList<Joueur>();
@@ -121,6 +121,10 @@ public class Partie {
       //  partie.eliminerJoueur(groupeJoueur, 0);
 
         partie.getPremierJoueur().jouer();
-
+        //System.out.println(groupeJoueur.get(1).mainJoueur.get(1));
+        //partie.effethunt(groupeJoueur.get(1).mainJoueur.get(1).effeth);
+        partie.effethunt(Carte.Set.get(11).effeth);
     }
+
+
 }

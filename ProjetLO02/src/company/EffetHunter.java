@@ -1,40 +1,60 @@
 package company;
 
-public class EffetHunter {
+public interface EffetHunter {
 
 
-        public void effethunt(String effet)
+        public default void effethunt(String effet)
     {
 
-        if (effet.contains("&"))
-
-        { }
 
 
+        String effets[] = effet.split("&");
+        for (int i = 0; i < effets.length; i++)
+        {
 
-        switch(effet) {
 
-            case "reveal" : break;
 
-            case "choosenextp ": break;
+        switch(effets[i]) {
 
-            case "getbackcard" : break;
+            case "reveal":
+                System.out.println("reveal");
+                break;
 
-            case "lookid" : break;
+            case "choosenextp":
+                System.out.println("choosenextp");
+                break;
+
+            case "getbackcard":
+                System.out.println("getbackcard");
+                break;
+
+            case "lookid":
+                System.out.println("lookid");
+                break;
 
             case "takcardrfp":
-            case "takcardfp" : break;
+            case "takcardfp":
+                System.out.println("takcardrfp or takcardfp");
+                break;
 
-            case "takdcard" : break;
+            case "takdcard":
+                System.out.println("takdcard");
+                break;
 
-            case "discardc ": break;
+            case "discardc ":
+                System.out.println("discardc");
+                break;
 
-            case "qwitch" : break;
+            case "qwitch":
+                System.out.println("qwitch");
+                break;
 
-            case "sreveal" : break;
+            case "sreveal":
+                System.out.println("sreveal");
+                break;
 
 
-
+        }
 
 
 
