@@ -1,5 +1,3 @@
-package company;
-
 import java.util.*;
 
 
@@ -16,7 +14,7 @@ public class Joueur implements EffetHunter,EffetWitch {
 
 
     public String toString() {
-        return "company.Joueur : " + nomJoueur + " mainJoueur = " + mainJoueur;
+        return "Joueur : " + nomJoueur + " mainJoueur = " + mainJoueur;
     }
 
     //////////////Constructeur//////////////

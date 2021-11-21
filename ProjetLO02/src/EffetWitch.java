@@ -1,5 +1,3 @@
-package company;
-
 public interface EffetWitch {
 
     public default void effetwitch(String effet)

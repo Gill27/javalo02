@@ -1,5 +1,3 @@
-package company;
-
 import java.util.*;
 
 public class Partie  {
@@ -44,11 +42,11 @@ public class Partie  {
 
         int idjj = sc.nextInt();
         sc.nextLine();
-        System.out.println("company.Joueur : " + groupeJoueur.get(idjj).getNomJoueur() + " est le plus jeune joueur");
+        System.out.println("Joueur : " + groupeJoueur.get(idjj).getNomJoueur() + " est le plus jeune joueur");
         return groupeJoueur.get(idjj);
     }
 
-   /* public static void joueurSuivant (company.Joueur joueur){
+   /* public static void joueurSuivant (Joueur joueur){
         joueur.jouer(groupeJoueur);
         groupeJoueur.indexOf(joueur).jouer(groupeJoueur);
     }*/

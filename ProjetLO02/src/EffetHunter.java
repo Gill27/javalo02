@@ -1,5 +1,3 @@
-package company;
-
 public interface EffetHunter {
 
 
