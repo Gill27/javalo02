@@ -43,6 +43,7 @@ public interface EffetHunter {
 
             case "discardc ":
                 System.out.println("discardc");
+
                 break;
 
             case "qwitch":
