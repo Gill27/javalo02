@@ -25,7 +25,6 @@ public class Carte  {
     public static void InitCartes(){
 
         Carte carte1 = new Carte("angry_mob" , "takenext" , "reveal");
-
         Carte carte2 = new Carte("the_inquisition" , "disc&takenext", "lookid&choosenextp");
         Carte carte3 = new Carte("pointed_hat","getbackcard&takenext","takcardrfp&choosenextp");
         Carte carte4 = new Carte("ducking_stool","choosenextp","qwitch");

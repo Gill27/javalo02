@@ -2,6 +2,7 @@ import java.util.*;
 
 public class Partie  {
 
+
     public int nombreJrs;
     public static ArrayList<Joueur> groupeJoueur = new ArrayList<Joueur>();
     private int [] score;

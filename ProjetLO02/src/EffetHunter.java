@@ -14,6 +14,7 @@ public interface EffetHunter {
 
         switch(effets[i]) {
 
+
             case "reveal":
                 System.out.println("reveal");
                 break;
