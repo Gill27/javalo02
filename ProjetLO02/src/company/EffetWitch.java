@@ -2,63 +2,49 @@ package company;
 
 public interface EffetWitch {
 
-    public default void effetwitch(String effet)
+    public default void effetwitch(String effet, Joueur joueurAccuse)
     {
-
-
 
         String effets[] = effet.split("&");
         for (int i = 0; i < effets.length; i++)
         {
-
-
-
             switch(effets[i]) {
 
-                case "reveal":
-                    System.out.println("reveal");
+                case "takenext": // take next turn
+                    joueurAccuse.jouer();
                     break;
 
-                case "choosenextp":
-                    System.out.println("choosenextp");
+                case "disc": // discard a crad from your hand
+                    joueurAccuse.discardCard();
                     break;
 
-                case "getbackcard":
-                    System.out.println("getbackcard");
+                case "getbackcard": // take one of your own revealed cards into your hand
+                    joueurAccuse.getbackcard("witch");
                     break;
 
-                case "lookid":
-                    System.out.println("lookid");
+                case "choosenextp": // choose next player
+                    joueurAccuse.choosenextp();
                     break;
 
-                case "takcardrfp":
-                case "takcardfp":
-                    System.out.println("takcardrfp or takcardfp");
+                case "takecarday":  // take one card from the hand of the player who accused you
+                    joueurAccuse.takeOneCard();
                     break;
 
-                case "takdcard":
-                    System.out.println("takdcard");
+                case "discardcay":  // the player who accused you discards a random card from their hand
+                    Partie.getleGroupeJoueur().get(joueurAccuse.iAccusateur).diacardRandomCard();
                     break;
 
-                case "discardc ":
-                    System.out.println("discardc");
+                case "cantaccy": // choose next player & on their trun must accuse a player other than you, if possible
+                    joueurAccuse.cantaccy();
                     break;
 
-                case "qwitch":
-                    System.out.println("qwitch");
-                    break;
-
-                case "sreveal":
-                    System.out.println("sreveal");
+                default :
+                    System.out.println("Une erreur est survenue !");
+                    joueurAccuse.jouer();
                     break;
 
 
             }
-
-
-
         }
-
-
     }
 }
