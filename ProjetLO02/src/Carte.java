@@ -52,7 +52,6 @@ public class Carte  {
         System.out.println("Set de Carte : "+ Set);
 
         Pioche.addAll(Set);
-
     }
     public static void main(String[] args) {
         // write your code here

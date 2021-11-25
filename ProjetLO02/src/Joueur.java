@@ -13,7 +13,6 @@ public class Joueur implements EffetHunter,EffetWitch {
     public ArrayList<Carte> mainJoueur = new ArrayList<Carte>();
 
 
-
     public String toString() {
         return "Joueur : " + nomJoueur + " mainJoueur = " + mainJoueur;
     }

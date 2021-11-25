@@ -25,7 +25,6 @@ public interface EffetWitch {
                     System.out.println("getbackcard");
                     break;
 
-
                 case "lookid":
                     System.out.println("lookid");
                     break;
