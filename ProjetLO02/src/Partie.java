@@ -21,15 +21,34 @@ public class Partie  {
         return partie;
     }
 
-    private Partie (){
-        this.nombreJrs=0;
-        this.numeroManche =0;
-        score = new int [nombreJrs]; // réservation en mémoire d'un tableau de nombre de joueurs
-        for (int i = 0 ; i < nombreJrs ; i ++){
-            score[i] = 0; // initialisation du score de tous le jouers de la partie a 0
-        }
+    public int getNombreJrs() {
+        return nombreJrs;
     }
 
+    private Partie (){
+        this.nombreJrs = 0;
+        this.numeroManche =0;
+        score = new int [nombreJrs]; // réservation en mémoire d'un tableau de nombre de joueurs
+
+    }
+
+
+
+    public static void addPoint(Joueur j,int p)
+    {
+
+        partie.score[groupeJoueur.indexOf(j)] += p;
+
+    }
+    public static void subPoint(Joueur j, int p)
+    {
+        if (partie.score[groupeJoueur.indexOf(j)] < p){
+
+            partie.score[groupeJoueur.indexOf(j)] = 0;
+
+        }
+        else   partie.score[groupeJoueur.indexOf(j)] -= p;
+    }
     public Joueur getPremierJoueur(){
         Scanner sc = new Scanner(System.in);
 
@@ -56,7 +75,7 @@ public class Partie  {
         Collections.shuffle(Carte.Pioche);
 
         Iterator<Carte> it1 = Carte.Pioche.iterator();
-       while( Carte.Pioche.size()>= nombreJrs) {
+        while( Carte.Pioche.size()>= nombreJrs) {
             for(int i = 0 ; i<nombreJrs; i++) {
                 groupeJoueur.get(i).mainJoueur.add(it1.next());
                 it1.remove();
@@ -90,13 +109,19 @@ public class Partie  {
                 }
             }
         }while (nombreJrs < 3 || nombreJrs > 6);
+        score = new int[nombreJrs];
+        for (int i = 0 ; i < nombreJrs ; i ++){
+
+            score[i] = 0; // initialisation du score de tous le jouers de la partie a 0
+            System.out.println(score[i]);
+        }
     }
 
     public static void eliminerJoueur (Joueur jrASupp){
-        if (jrASupp.getIdRevele() == true){
-            groupeJoueur.remove(jrASupp);
-            System.out.println(jrASupp.getNomJoueur()+" Votre identité est révelé vous etes éliminé de la manche !");
-        }
+
+        groupeJoueur.remove(jrASupp);
+        System.out.println(jrASupp.getNomJoueur()+"Sorcière !!!! 0Votre identité est révelé vous etes éliminé de la manche !");
+
 
     }
 
@@ -115,7 +140,7 @@ public class Partie  {
         for (Joueur j : groupeJoueur)
             j.choisirIdentite();
 
-      //  partie.eliminerJoueur(groupeJoueur, 0);
+        //  partie.eliminerJoueur(groupeJoueur, 0);
         premierJoueur = partie.getPremierJoueur();
         premierJoueur.jouer();
 
