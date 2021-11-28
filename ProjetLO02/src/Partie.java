@@ -1,17 +1,23 @@
+import java.awt.desktop.SystemEventListener;
 import java.util.*;
 
-public class Partie  {
+public class Partie implements Input  {
 
     public int nombreJrs;
     public static ArrayList<Joueur> groupeJoueur = new ArrayList<Joueur>();
     private int [] score;
-    private int numeroManche;
-
     public static Partie partie = null;  // variable nécessaire au mecanisme du singleton
+    private static ArrayList<String> saveNomsJoueursManche = new ArrayList<String>();
+    // add 27/11
+    private static boolean premierAppelDistMain = true;
+    private static boolean premierAppelGet1erJoueur = true;
+    private static int premierJoueur;
+    /*----------------------------------------------------------------------------------------------------*/
 
 
-    public static ArrayList<Joueur> getleGroupeJoueur (){
-        return groupeJoueur;
+    private Partie (){
+        this.nombreJrs = 0;
+        score = new int [nombreJrs]; // réservation en mémoire d'un tableau de nombre de joueurs
     }
 
     public static Partie getInstance(){
@@ -25,126 +31,207 @@ public class Partie  {
         return nombreJrs;
     }
 
-    private Partie (){
-        this.nombreJrs = 0;
-        this.numeroManche =0;
-        score = new int [nombreJrs]; // réservation en mémoire d'un tableau de nombre de joueurs
-
+    public static ArrayList<Joueur> getleGroupeJoueur (){
+        return groupeJoueur;
     }
 
-
-
-    public static void addPoint(Joueur j,int p)
-    {
-
+    public static void addPoint(Joueur j,int p) {
         partie.score[groupeJoueur.indexOf(j)] += p;
-
+        System.out.println(j.getNomJoueur() +" gagne "+ p + " points" );
     }
-    public static void subPoint(Joueur j, int p)
-    {
+
+    public static void subPoint(Joueur j, int p) {
         if (partie.score[groupeJoueur.indexOf(j)] < p){
-
             partie.score[groupeJoueur.indexOf(j)] = 0;
-
         }
-        else   partie.score[groupeJoueur.indexOf(j)] -= p;
+        else partie.score[groupeJoueur.indexOf(j)] -= p;
+        System.out.println(j.getNomJoueur() +" perd " + p + " points" );
     }
+
     public Joueur getPremierJoueur(){
-        Scanner sc = new Scanner(System.in);
+        System.out.println("----------------------------------------------------------------------------------------------------");
+        if ( premierAppelGet1erJoueur) {
+            System.out.println("Quel est le plus jeune joueur ? Taper le numéro correspondant au joueur : ");
 
-        System.out.println("Quel est le plus jeune joueur ?  Tapez le numéro correspondant au joueur : ");
+            for (Joueur j : groupeJoueur) {
+                System.out.print(j.getNomJoueur() + " : " + groupeJoueur.indexOf(j));
+                System.out.print(" | ");
+            }
+            System.out.printf("%n");
 
-        for (Joueur j : groupeJoueur) {
-            System.out.print(j.getNomJoueur() + " : " + groupeJoueur.indexOf(j)+ "  |  ");
+            premierJoueur = Input.inputInt(); // premierJoueur est un variable globale
+            System.out.println(groupeJoueur.get(premierJoueur).getNomJoueur() + " est le joueur le plus jeune");
+            premierAppelGet1erJoueur = false;
         }
-        System.out.println();
+        return groupeJoueur.get(premierJoueur);
 
-        int idjj = sc.nextInt();
-        sc.nextLine();
-        System.out.println("Joueur : " + groupeJoueur.get(idjj).getNomJoueur() + " est le plus jeune joueur");
-        return groupeJoueur.get(idjj);
     }
-
-   /* public static void joueurSuivant (Joueur joueur){
-        joueur.jouer(groupeJoueur);
-        groupeJoueur.indexOf(joueur).jouer(groupeJoueur);
-    }*/
 
     public void distribuerMain(){
-        Carte.InitCartes();
-        Collections.shuffle(Carte.Pioche);
-
-        Iterator<Carte> it1 = Carte.Pioche.iterator();
-        while( Carte.Pioche.size()>= nombreJrs) {
-            for(int i = 0 ; i<nombreJrs; i++) {
-                groupeJoueur.get(i).mainJoueur.add(it1.next());
-                it1.remove();
-            }
-        }
+       Carte.InitCartes();
+       Collections.shuffle(Carte.Pioche);
+       Iterator<Carte> it1 = Carte.Pioche.iterator();
+       if (premierAppelDistMain) {
+           while (Carte.Pioche.size() >= nombreJrs) {
+               for (int i = 0; i < nombreJrs; i++) {
+                   groupeJoueur.get(i).mainJoueur.add(it1.next());
+                   it1.remove();
+               }
+           }
+           premierAppelDistMain = false;
+       }else {
+           groupeJoueur.clear();
+           for (int i = 0;i <nombreJrs;i++){
+               groupeJoueur.add(new Joueur(saveNomsJoueursManche.get(i)));
+           }
+           while (Carte.Pioche.size() >= nombreJrs) {
+               for (int i = 0; i < nombreJrs; i++) {
+                   groupeJoueur.get(i).mainJoueur.add(it1.next());
+                   it1.remove();
+               }
+           }
+       }
         System.out.println("Pioche : " + Carte.Pioche);
+        System.out.println("----------------------------------------------------------------------------------------------------");
     }
 
     public void creerJoueurs (){
         String name;
-        Scanner sc = new Scanner(System.in);
         System.out.print("Entrer le nombre de joueur dans la partie");
         System.out.println(" (nombre compris entre 3 et 6) ");
-        nombreJrs = sc.nextInt();
-        sc.nextLine(); // voir https://developpement-informatique.com/article/267/lire-les-entrees-clavier-en-java pour recomprendre
+        nombreJrs = Input.inputInt();
         do {
             if (nombreJrs < 3 || nombreJrs > 6){
                 System.out.println("Il y a trop ou pas assez de joueur dans la partie veuillez recommencer !");
-                nombreJrs = sc.nextInt();
-                sc.nextLine();
+                nombreJrs = Input.inputInt();
             }
-
             if (nombreJrs >= 3 && nombreJrs <= 6)
             {
                 for (int i = 0; i < nombreJrs; i++) {
                     System.out.println("Entrer le nom du joueur " + i);
-                    name = sc.nextLine();
-
+                    name = Input.inputString();
+                    saveNomsJoueursManche.add(name);
                     groupeJoueur.add(new Joueur(name));
-                    System.out.println("Le nom du jouer" + i + " est " + name);
                 }
             }
         }while (nombreJrs < 3 || nombreJrs > 6);
+        System.out.println("----------------------------------------------------------------------------------------------------");
+        System.out.println("Affichage des scores : ");
         score = new int[nombreJrs];
         for (int i = 0 ; i < nombreJrs ; i ++){
-
             score[i] = 0; // initialisation du score de tous le jouers de la partie a 0
-            System.out.println(score[i]);
+            System.out.println(groupeJoueur.get(i).getNomJoueur() + " Score : " + score[i]);
         }
+        System.out.println("----------------------------------------------------------------------------------------------------");
     }
 
     public static void eliminerJoueur (Joueur jrASupp){
-
-        groupeJoueur.remove(jrASupp);
-        System.out.println(jrASupp.getNomJoueur()+"Sorcière !!!! 0Votre identité est révelé vous etes éliminé de la manche !");
-
-
+            groupeJoueur.remove(jrASupp);
+            System.out.println(jrASupp.getNomJoueur()+" Votre identité est révelé vous etes éliminé de la manche !");
     }
 
-    public static void main ( String []args){
-        Partie partie = Partie.getInstance();
+    private static void printScore(){
+        System.out.println("----------------------------------------------------------------------------------------------------");
+        System.out.printf("Affichage des scores des joueurs : %n");
+        for(Joueur j : groupeJoueur){
+            System.out.println(j.getNomJoueur() + " score : " + partie.score[groupeJoueur.indexOf(j)]);
+        }
+    }
+
+    public static void finPartie (){
+        ArrayList<Joueur> gagnants = new ArrayList<>(); // la liste de vainceurs !
+        for (Joueur j : groupeJoueur){
+            if ( partie.score[groupeJoueur.indexOf(j)] >= 5) {
+                    gagnants.add(j); // je stock les gagnants dans un tableau car il peut y en avoir plusieurs !
+            }
+            if (!gagnants.isEmpty()){ // il y a au moins un gagnant
+                if(gagnants.size() > 1) {
+                    System.out.println("Il y a plusieurs gagnants le vainceur serra choisit aléatoirement :( ");
+                    int rdm = (int) (Math.random() * (gagnants.size()));
+                    System.out.printf("Le gagnant de la partie est donc " + gagnants.get(rdm).getNomJoueur() +" %n");
+
+                }else {
+                    System.out.println(gagnants.get(0).getNomJoueur() + " a plus de 5 points, il a gagné la partie !");
+                    /*System.out.println("Voulez voues relancer une partie ? ( oui ou non )");
+                    String reponse = Input.inputString();
+                    if (reponse.equalsIgnoreCase("oui")) {
+                        lancerPartie();
+                    }
+                    if (reponse.equalsIgnoreCase("non")) {
+                        System.out.println("La partie est terminée");
+                        System.exit(0);
+                    }*/
+                    printScore();
+                    System.out.println("----------------------------------------------------------------------------------------------------");
+                    System.exit(0);
+                }
+
+            }
+        }
+    }
+
+    public static void finRound (ArrayList<Joueur> groupeJoueur){
+        boolean fin;
+        int nbJIdUnReveal = 0;
+        fin = false;
+        for(Joueur j : groupeJoueur){
+            if(j.isIdRevele() == false){
+                nbJIdUnReveal += 1;
+
+            }
+        }
+
+
+        if ( nbJIdUnReveal == 1){
+            for(Joueur j : groupeJoueur){
+                if(j.isIdRevele() == false){
+
+                   System.out.println("----------------------------------------------------------------------------------------------------");
+                   System.out.printf(j.getNomJoueur() + " est le dernier joueur à ne pas être révélé !");
+                   System.out.println("Il était " + j.getId()+ " !");
+                    if(j.getId() == Joueur.Identite.Sorciere) {
+
+                        Partie.addPoint(j,2);
+                    }
+                    else Partie.addPoint(j,1);
+                   System.out.println(" Fin de la manche");
+
+                }
+            }
+
+            System.out.println("----------------------------------------------------------------------------------------------------");
+            finPartie();
+            nouvelleManche();
+        }
+    }
+
+    public static void lancerPartie (){
+        partie.creerJoueurs();
+        nouvelleManche();
+    }
+
+    public static void nouvelleManche(){
         Joueur premierJoueur;
 
-        partie.creerJoueurs();
+        System.out.printf("NOUVELLE MANCHE : **********************************************************************************%n");
+        System.out.println("----------------------------------------------------------------------------------------------------");
         partie.distribuerMain();
 
         for (Joueur i : groupeJoueur)
         {
             System.out.println(i);
         }
-
+        partie.printScore();
+        System.out.println("----------------------------------------------------------------------------------------------------");
         for (Joueur j : groupeJoueur)
             j.choisirIdentite();
 
-        //  partie.eliminerJoueur(groupeJoueur, 0);
         premierJoueur = partie.getPremierJoueur();
         premierJoueur.jouer();
-
-
+    }
+    public static void main (String[] args){
+        Partie partie = Partie.getInstance();
+        lancerPartie();
 
     }
 }
