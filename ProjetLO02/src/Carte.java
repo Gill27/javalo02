@@ -5,12 +5,9 @@ public class Carte  {
 
     public String nom;
     public static boolean premierAppel = true;
-    public static ArrayList<Carte> Pioche = new ArrayList<Carte>();
-    public static ArrayList<Carte> Set = new ArrayList<Carte>();
+    public static ArrayList<Carte> Pioche = new ArrayList<>();
+    public static ArrayList<Carte> Set = new ArrayList<>();
     public String effeth,effetw;
-    public Carte(String nom) {
-        this.nom = nom;
-    }
 
     public Carte(String nom, String effetw, String effeth) {
         this.nom = nom;
@@ -50,11 +47,10 @@ public class Carte  {
             Set.add(carte12);
 
             premierAppel = false;
-            Pioche.addAll(Set);
         }else{
             Pioche.clear();
-            Pioche.addAll(Set);
         }
+        Pioche.addAll(Set);
         System.out.println("Set de Carte : "+ Set);
 
     }

@@ -5,6 +5,7 @@ public class Partie implements Input  {
 
     public int nombreJrs;
     public static ArrayList<Joueur> groupeJoueur = new ArrayList<Joueur>();
+    public static ArrayList<Joueur> groupeJoueurP = new ArrayList<>();
     private int [] score;
     public static Partie partie = null;  // variable nécessaire au mecanisme du singleton
     private static ArrayList<String> saveNomsJoueursManche = new ArrayList<String>();
@@ -12,6 +13,7 @@ public class Partie implements Input  {
     private static boolean premierAppelDistMain = true;
     private static boolean premierAppelGet1erJoueur = true;
     private static int premierJoueur;
+    private int NbrBot;
     /*----------------------------------------------------------------------------------------------------*/
 
 
@@ -68,29 +70,17 @@ public class Partie implements Input  {
     }
 
     public void distribuerMain(){
-       Carte.InitCartes();
-       Collections.shuffle(Carte.Pioche);
-       Iterator<Carte> it1 = Carte.Pioche.iterator();
-       if (premierAppelDistMain) {
-           while (Carte.Pioche.size() >= nombreJrs) {
-               for (int i = 0; i < nombreJrs; i++) {
-                   groupeJoueur.get(i).mainJoueur.add(it1.next());
-                   it1.remove();
-               }
-           }
-           premierAppelDistMain = false;
-       }else {
-           groupeJoueur.clear();
-           for (int i = 0;i <nombreJrs;i++){
-               groupeJoueur.add(new Joueur(saveNomsJoueursManche.get(i)));
-           }
-           while (Carte.Pioche.size() >= nombreJrs) {
-               for (int i = 0; i < nombreJrs; i++) {
-                   groupeJoueur.get(i).mainJoueur.add(it1.next());
-                   it1.remove();
-               }
-           }
-       }
+        Carte.InitCartes();
+        Collections.shuffle(Carte.Pioche);
+        Iterator<Carte> it1 = Carte.Pioche.iterator();
+
+            while (Carte.Pioche.size() >= nombreJrs) {
+                for (int i = 0; i < nombreJrs; i++) {
+                    groupeJoueur.get(i).mainJoueur.add(it1.next());
+                    it1.remove();
+                }
+            }
+
         System.out.println("Pioche : " + Carte.Pioche);
         System.out.println("----------------------------------------------------------------------------------------------------");
     }
@@ -110,8 +100,17 @@ public class Partie implements Input  {
                 for (int i = 0; i < nombreJrs; i++) {
                     System.out.println("Entrer le nom du joueur " + i);
                     name = Input.inputString();
-                    saveNomsJoueursManche.add(name);
+                    groupeJoueurP.add(new Joueur(name));
                     groupeJoueur.add(new Joueur(name));
+                }
+                System.out.println("Combien de Bot voulez vous ajouter ? (0 à "+(6-nombreJrs) +" bot(s).");
+                NbrBot = Input.inputInt();
+                for (int i = 0;i <NbrBot ; i++)
+                {
+                        name = "Bot"+(i+1);
+                        groupeJoueurP.add(new Bot(name));
+                        groupeJoueur.add(new Bot(name));
+                        nombreJrs +=1;
                 }
             }
         }while (nombreJrs < 3 || nombreJrs > 6);
@@ -126,8 +125,8 @@ public class Partie implements Input  {
     }
 
     public static void eliminerJoueur (Joueur jrASupp){
-            groupeJoueur.remove(jrASupp);
-            System.out.println(jrASupp.getNomJoueur()+" Votre identité est révelé vous etes éliminé de la manche !");
+        groupeJoueur.remove(jrASupp);
+        System.out.println(jrASupp.getNomJoueur()+" Votre identité est révelé vous etes éliminé de la manche !");
     }
 
     private static void printScore(){
@@ -142,7 +141,7 @@ public class Partie implements Input  {
         ArrayList<Joueur> gagnants = new ArrayList<>(); // la liste de vainceurs !
         for (Joueur j : groupeJoueur){
             if ( partie.score[groupeJoueur.indexOf(j)] >= 5) {
-                    gagnants.add(j); // je stock les gagnants dans un tableau car il peut y en avoir plusieurs !
+                gagnants.add(j); // je stock les gagnants dans un tableau car il peut y en avoir plusieurs !
             }
             if (!gagnants.isEmpty()){ // il y a au moins un gagnant
                 if(gagnants.size() > 1) {
@@ -186,15 +185,15 @@ public class Partie implements Input  {
             for(Joueur j : groupeJoueur){
                 if(j.isIdRevele() == false){
 
-                   System.out.println("----------------------------------------------------------------------------------------------------");
-                   System.out.printf(j.getNomJoueur() + " est le dernier joueur à ne pas être révélé !");
-                   System.out.println("Il était " + j.getId()+ " !");
+                    System.out.println("----------------------------------------------------------------------------------------------------");
+                    System.out.printf(j.getNomJoueur() + " est le dernier joueur à ne pas être révélé !");
+                    System.out.println("Il était " + j.getId()+ " !");
                     if(j.getId() == Joueur.Identite.Sorciere) {
 
                         Partie.addPoint(j,2);
                     }
                     else Partie.addPoint(j,1);
-                   System.out.println(" Fin de la manche");
+                    System.out.println(" Fin de la manche");
 
                 }
             }
@@ -215,6 +214,9 @@ public class Partie implements Input  {
 
         System.out.printf("NOUVELLE MANCHE : **********************************************************************************%n");
         System.out.println("----------------------------------------------------------------------------------------------------");
+        groupeJoueur.clear();
+        groupeJoueurP.forEach(Joueur::reset);
+        groupeJoueur.addAll(groupeJoueurP);
         partie.distribuerMain();
 
         for (Joueur i : groupeJoueur)
