@@ -45,13 +45,14 @@ public class Effet  {
     }
 
     public static void sreveal(Joueur cjoueur) {
+
         if(cjoueur.id == Joueur.Identite.Sorciere)
         {
             System.out.println(cjoueur.getNomJoueur()+" était une sorcière !");
             int indexjp, indexj = Partie.getleGroupeJoueur().indexOf(cjoueur);
 
-            if (indexj ==0 )  indexjp = Partie.getleGroupeJoueur().size()-1;
-            else indexjp = indexj-1;
+            if (indexj ==0 )  indexjp = 1;
+            else indexjp = 0;
 
             Partie.eliminerJoueur(cjoueur);
             System.out.println(" Le joueur suivant est : " + Partie.getleGroupeJoueur().get(indexjp).getNomJoueur());
@@ -61,7 +62,7 @@ public class Effet  {
         {
             System.out.println(cjoueur.getNomJoueur()+" est un villageois, c'est à son tours !");
             cjoueur.idRevele = true;
-            cjoueur.jouer();
+            choosenextp(cjoueur);
         }
     }
 
@@ -75,12 +76,24 @@ public class Effet  {
         while (Partie.getleGroupeJoueur().get(idjr).carteRevele.contains(Carte.Set.get(6))) {
             System.out.println("Vous ne pouvez pas choisir ce joueur puisqu'il a révélé Ducking Stool");
 
+            if (Partie.getleGroupeJoueur().size()==1)
+            {
+                cjoueur.jouer();
+            }
             idjr = cjoueur.choisirjoueur();
         }
 
         if (!Partie.getleGroupeJoueur().get(idjr).mainJoueur.isEmpty()) {
             System.out.println(Partie.getleGroupeJoueur().get(idjr).getNomJoueur() + " Voulez vous révéler votre identité ?");
-            String stdr = Input.inputString();
+            String stdr;
+            if (Partie.getleGroupeJoueur().get(idjr).getClass()== Bot.class) {
+                stdr = Bot.chooseRandomChoiceON();
+                if (!cjoueur.isIdRevele() && cjoueur.getId() == Joueur.Identite.Sorciere )
+                {
+                    stdr = "non";
+                }
+            }
+            else  stdr = Input.inputString();
             if (stdr.equalsIgnoreCase("non") || stdr.equalsIgnoreCase("n"))
             {
 
@@ -94,7 +107,7 @@ public class Effet  {
             }
 
         }
-        System.out.println("Vous avez décider de révélé votre identité : ");
+        System.out.println("Vous avez décidé de révélé votre identité : ");
         if (Partie.getleGroupeJoueur().get(idjr).id == Joueur.Identite.Sorciere) {
             System.out.println("Bravo " + Partie.getleGroupeJoueur().get(idjr).getNomJoueur() + " est une sorcière");
             System.out.println(cjoueur.getNomJoueur() + ", vous gagnez 1 points");
@@ -142,7 +155,7 @@ public class Effet  {
         System.out.println(Partie.getleGroupeJoueur().get(idjr).mainJoueur);
         System.out.println(Partie.getleGroupeJoueur().get(idjr).mainJoueur.isEmpty());
         if (!Partie.getleGroupeJoueur().get(idjr).mainJoueur.isEmpty()) {
-            System.out.println("Passé");
+
 
             Carte carterem = Partie.getleGroupeJoueur().get(idjr).mainJoueur.get((int)Math.floor(Math.random() * (Partie.getleGroupeJoueur().get(idjr).mainJoueur.size() - 1 +1)));
 
@@ -152,7 +165,7 @@ public class Effet  {
             choosenextp(cjoueur);
 
         }
-        System.out.println("Pas passé");
+
     }
 
     public static void takedcard(Joueur cjoueur){
@@ -216,6 +229,7 @@ public class Effet  {
     //////////////Méthode de Witch //////////////
 
     public static void takeOneCard(Joueur cjoueur){
+
         Joueur joueurAccusateur =Partie.getleGroupeJoueur().get(cjoueur.iAccusateur);
         int ncarte;
         boolean reponseValide = false ;
@@ -260,7 +274,21 @@ public class Effet  {
     }
 
     public static void cantaccy (Joueur cjoueur){
+
         Partie.getleGroupeJoueur().get(cjoueur.iAccusateur).joueurInterdit = cjoueur;
+    }
+    public static void chsenxtcantaccy(Joueur cjoueur){
+        System.out.println(cjoueur.getNomJoueur() + " a activé l'effet choosenextp de la carte");
+        System.out.print(cjoueur.getNomJoueur() + ", choisissez le joueur qui joueras au tour suivant.");
+        System.out.println(" Tapez le numéro correspondant au joueur : ");
+
+
+        int idjr =  cjoueur.choisirjoueur();
+
+        Partie.getleGroupeJoueur().get(idjr).joueurInterdit = cjoueur;
+        Partie.getleGroupeJoueur().get(idjr).jouer();
+
+
     }
 
     public static void discardCard (Joueur cjoueur){
@@ -275,7 +303,7 @@ public class Effet  {
             }
             System.out.println();
             do {
-                carteDefausse = Input.inputInt();
+                carteDefausse = cjoueur.mainJoueur.indexOf(cjoueur.choisircarte());
                 if (carteDefausse <= cjoueur.mainJoueur.size() && carteDefausse >= 0) {
                     reponseValide = true;
                     cjoueur.mainJoueur.remove(carteDefausse);
@@ -308,6 +336,9 @@ public class Effet  {
                     System.out.println("reveal");
                     reveal(cjoueur);
                     break;
+                case "chsenxtcantaccy":
+                    System.out.println("chsenxtcantaccy");
+                    chsenxtcantaccy(cjoueur);
 
                 case "choosenextp":
                     System.out.println("choosenextp");
@@ -372,6 +403,7 @@ public class Effet  {
             switch(effets[i]) {
 
                 case "takenext": // take next turn
+
                     joueurAccuse.jouer();
                     break;
 
@@ -395,7 +427,8 @@ public class Effet  {
                     diacardRandomCard(Partie.getleGroupeJoueur().get(joueurAccuse.iAccusateur));
                     break;
 
-                case "cantaccy": // choose next player & on their trun must accuse a player other than you, if possible
+                case "cantaccy": // choose next player & on their turn must accuse a player other than you, if possible
+
                     cantaccy(joueurAccuse);
                     break;
 

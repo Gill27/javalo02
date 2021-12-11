@@ -49,7 +49,8 @@ public class Joueur  implements Input {
         this.idRevele = false ;
         this.mainJoueur.clear();
         this.carteRevele.clear();
-        this.iAccusateur= 0;
+        this.iAccusateur= -1;
+        this.premierAppel =true;
     }
 
     public void choisirIdentite(){
@@ -90,8 +91,10 @@ public class Joueur  implements Input {
             joueurAccuse = groupeJoueur.get(reponse2);
 
             while (true) {
-                if (this.joueurInterdit != joueurAccuse || !joueurAccuse.idRevele || Partie.getleGroupeJoueur().size() <= 2) { // Attention
-                    this.accuser(joueurAccuse);
+
+
+                if (this.joueurInterdit != joueurAccuse && !joueurAccuse.idRevele/* && Partie.getleGroupeJoueur().size() <= 2*/) { // Attention
+                    joueurAccuse.etreaccuse(this);
                     break;
                 }
                 System.out.println("Vous ne pouvez pas accuser ce joueur !");
@@ -106,36 +109,36 @@ public class Joueur  implements Input {
         }
     }
 
-    public void accuser ( Joueur joueurAccuse){
-        System.out.println(this.nomJoueur + " Accuse " + joueurAccuse.nomJoueur + " d'être une sorciere");
+    public void etreaccuse ( Joueur joueurAccusateur){
+        System.out.println(joueurAccusateur.nomJoueur + " Accuse " + this.nomJoueur + " d'être une sorciere");
 
 
-        joueurAccuse.iAccusateur = Partie.getleGroupeJoueur().indexOf(this);
+        this.iAccusateur = Partie.getleGroupeJoueur().indexOf(joueurAccusateur);
 
 
-            System.out.println(joueurAccuse.nomJoueur + " Voulez vous reveler votre identité ? (oui ou non) ");
+            System.out.println(this.nomJoueur + " Voulez vous reveler votre identité ? (oui ou non) ");
             String reponse = Input.inputString();
-            if (reponse.equalsIgnoreCase("oui") || joueurAccuse.mainJoueur.isEmpty()) {
-                if(joueurAccuse.mainJoueur.size() == 0){
+            if (reponse.equalsIgnoreCase("oui") || this.mainJoueur.isEmpty()) {
+                if(this.mainJoueur.size() == 0){
                     System.out.println("Vous n'avez plus de carte rumeur dans votre main vous devez revelez votre identité !");
                 }
-                joueurAccuse.idRevele = true;
+                this.idRevele = true;
 
-                if (joueurAccuse.id == Identite.Sorciere) {
-                    System.out.println(joueurAccuse.nomJoueur + " est une " + joueurAccuse.id);
-                    Partie.addPoint(this, 1);
-                    System.out.println(this.nomJoueur + " Vous avez découvert une sorciere");
-                    Partie.eliminerJoueur(joueurAccuse);
+                if (this.id == Identite.Sorciere) {
+                    System.out.println(this.nomJoueur + " est une " + this.id);
+                    Partie.addPoint(joueurAccusateur, 1);
+                    System.out.println(joueurAccusateur.nomJoueur + ", vous avez découvert une sorciere");
+                    Partie.eliminerJoueur(this);
+                    joueurAccusateur.jouer();
+                } else if (this.id == Identite.Villageois) {
+                    System.out.println(this.nomJoueur + " est un " + this.id);
                     this.jouer();
-                } else if (joueurAccuse.id == Identite.Villageois) {
-                    System.out.println(joueurAccuse.nomJoueur + " est un " + joueurAccuse.id);
-                    joueurAccuse.jouer();
                 }
             } else if (reponse.equalsIgnoreCase("non")) {
                 System.out.println("Vous avez choisi de ne pas réveler votre identité ");
                 System.out.println("vous devez a présent résoudre l'effet witch d'une de vos carte");
 
-                Effet.effetwitch( joueurAccuse.choisircarte().effetw,joueurAccuse);
+                Effet.effetwitch( this.choisircarte().effetw,this);
             }
 
     }

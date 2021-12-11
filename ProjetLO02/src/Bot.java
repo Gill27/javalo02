@@ -1,32 +1,36 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class Bot extends Joueur implements StrategyJouer {
+public class Bot extends Joueur/* implements StrategyJouer*/{
     protected StrategyJouer strategy;
+
     public Bot(String nomJoueur) {
         super(nomJoueur);
-        this.strategy =  new Fort();
+       this.strategy =  new Fort();
 
     }
-    public void test()
-    {
+
+
+
+    public void jouer() {
+        strategy.jouer(this); // this = jouerAccusateur
+    }
+
+    public void etreaccuse(Joueur joueurAccusateur){
+        strategy.etreaccuse(joueurAccusateur,this); // this = joueurAccusateur
     }
 
 
     public void choisirIdentite(){
-        if ( this.premierAppel) {   // permet de ne pas pouvoir appeler 2 fois la méthode pour un meme joueur
+        if ( this.premierAppel) {
             System.out.print(this.nomJoueur + " entrer votre identite ");
             do {
                 System.out.println("(Sorciere ou Villageois)");
-                String identite = Input.inputString();
-                if (identite.equalsIgnoreCase("Sorciere") || identite.equalsIgnoreCase("S")) {
+                String identite = chooseRandomChoiceSV();
+                System.out.println(identite);
+                if (identite.equalsIgnoreCase("Sorciere")) {
                     id = Identite.Sorciere;
-                } else if (identite.equalsIgnoreCase("Villageois") || identite.equalsIgnoreCase("V")) {
+                } else if (identite.equalsIgnoreCase("Villageois")) {
                     id = Identite.Villageois;
-                } else {
-                    System.out.print("Erreur lors du choix de l'identite veuillez recommencer ");
                 }
                 this.premierAppel = false;
             } while (id == Identite.Default);
@@ -35,48 +39,9 @@ public class Bot extends Joueur implements StrategyJouer {
         }
     }
 
-    public void jouer() { /*      this = joueur Accusateur      */
-
-        System.out.println("test");
-        strategy.jouer(this);
-    }
-
-    public void accuser ( Joueur joueurAccuse){
-        System.out.println(this.nomJoueur + " Accuse " + joueurAccuse.nomJoueur + " d'être une sorciere");
-
-
-        joueurAccuse.iAccusateur = Partie.getleGroupeJoueur().indexOf(this);
-
-
-        System.out.println(joueurAccuse.nomJoueur + " Voulez vous reveler votre identité ? (oui ou non) ");
-        String reponse = Input.inputString();
-        if (reponse.equalsIgnoreCase("oui") || joueurAccuse.mainJoueur.isEmpty()) {
-            if(joueurAccuse.mainJoueur.size() == 0){
-                System.out.println("Vous n'avez plus de carte rumeur dans votre main vous devez revelez votre identité !");
-            }
-            joueurAccuse.idRevele = true;
-
-            if (joueurAccuse.id == Identite.Sorciere) {
-                System.out.println(joueurAccuse.nomJoueur + " est une " + joueurAccuse.id);
-                Partie.addPoint(this, 1);
-                System.out.println(this.nomJoueur + " Vous avez découvert une sorciere");
-                Partie.eliminerJoueur(joueurAccuse);
-                this.jouer();
-            } else if (joueurAccuse.id == Identite.Villageois) {
-                System.out.println(joueurAccuse.nomJoueur + " est un " + joueurAccuse.id);
-                joueurAccuse.jouer();
-            }
-        } else if (reponse.equalsIgnoreCase("non")) {
-            System.out.println("Vous avez choisi de ne pas réveler votre identité ");
-            System.out.println("vous devez a présent résoudre l'effet witch d'une de vos carte");
-
-            Effet.effetwitch( joueurAccuse.choisircarte().effetw,joueurAccuse);
-        }
-
-    }
-
     public int choisirjoueur() {
         int identJoueur;
+        Random random = new Random();
         List<Integer> noj = new LinkedList<>();
 
         for (Joueur j : Partie.getleGroupeJoueur()) {
@@ -88,14 +53,12 @@ public class Bot extends Joueur implements StrategyJouer {
         System.out.println();
 
         while (true) {
-            Random random = new Random();
             identJoueur = random.nextInt(Partie.getleGroupeJoueur().size()-1);;
+            System.out.println(identJoueur);
             if (noj.contains(identJoueur)) {
                 break;
             }
-            System.out.println("Numéro incorrect, réessayez : ");
         }
-
         return identJoueur;
     }
 
@@ -104,33 +67,40 @@ public class Bot extends Joueur implements StrategyJouer {
         int numeroCarte;
         boolean reponseValide = false ;
 
-        System.out.println(this.getNomJoueur() + " choisisez une carte dans votre main : ");
+        System.out.println(this.getNomJoueur() + " choisis une carte de sa main : ");
 
         for (int j =0; j <this.mainJoueur.size();j++){
             System.out.printf("%n" + j + " : " + this.mainJoueur.get(j));
         }
+
         System.out.println();
         do {
             numeroCarte = random.nextInt(this.mainJoueur.size());
+            System.out.println(numeroCarte);
             if (numeroCarte <= this.mainJoueur.size() && numeroCarte >= 0) {
                 reponseValide = true;
             }
-            else System.out.printf("Vous ne disposez pas de cette carte dans votre main. Veuillez recommencer %n");
         }while(!reponseValide);
 
         this.carteRevele.add(this.mainJoueur.get(numeroCarte));
 
         this.mainJoueur.remove(numeroCarte);
 
-
-        //System.out.print(cartetest);
-
         return this.carteRevele.getLast();
-
     }
 
-    @Override
-    public void jouer(Bot cbot) {
-
+    public String chooseRandomChoiceSV(){
+        ArrayList<String> choix = new ArrayList<>();
+        choix.add("Sorciere");
+        choix.add("Villageois");
+        Collections.shuffle(choix);
+        return choix.get(0);
+    }
+    public static String chooseRandomChoiceON(){
+        ArrayList<String> choix = new ArrayList<>();
+        choix.add("oui");
+        choix.add("non");
+        Collections.shuffle(choix);
+        return choix.get(0);
     }
 }

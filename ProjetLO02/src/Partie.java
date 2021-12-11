@@ -88,13 +88,16 @@ public class Partie implements Input  {
     public void creerJoueurs (){
         String name;
         System.out.print("Entrer le nombre de joueur dans la partie");
-        System.out.println(" (nombre compris entre 3 et 6) ");
+        System.out.println(" (nombre compris entre 1 et 6) ");
         nombreJrs = Input.inputInt();
         do {
-            if (nombreJrs < 3 || nombreJrs > 6){
+
+            if (nombreJrs < 1 || nombreJrs > 6){
                 System.out.println("Il y a trop ou pas assez de joueur dans la partie veuillez recommencer !");
                 nombreJrs = Input.inputInt();
             }
+
+
             if (nombreJrs >= 3 && nombreJrs <= 6)
             {
                 for (int i = 0; i < nombreJrs; i++) {
@@ -113,7 +116,30 @@ public class Partie implements Input  {
                         nombreJrs +=1;
                 }
             }
-        }while (nombreJrs < 3 || nombreJrs > 6);
+
+            if (nombreJrs > 0|| nombreJrs < 3) {
+                System.out.println("Vous avez choisi un nombre de joueur inferieur à 3 : ");
+                System.out.println( (3-nombreJrs) + " Bot(s) vont être ajouté");
+
+                for (int i = 0; i < nombreJrs; i++) {
+                    System.out.println("Entrer le nom du joueur " + i);
+                    name = Input.inputString();
+                    groupeJoueurP.add(new Joueur(name));
+                    groupeJoueur.add(new Joueur(name));
+                    System.out.println(groupeJoueur);
+                }
+                int nbraajouter  = (3-nombreJrs) ;
+
+                for (int i = 0;i <nbraajouter ; i++)
+                {
+                    name = "Bot"+(i+1);
+                    groupeJoueurP.add(new Bot(name));
+                    groupeJoueur.add(new Bot(name));
+                    nombreJrs +=1;
+                }
+            }
+        }while (nombreJrs < 1 || nombreJrs > 6);
+
         System.out.println("----------------------------------------------------------------------------------------------------");
         System.out.println("Affichage des scores : ");
         score = new int[nombreJrs];
